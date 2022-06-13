@@ -8,7 +8,6 @@ import {
   Root,
 } from '@nestjs/graphql';
 import { UserService } from '../../modules/user/user.service';
-import { Admin } from '../../shared/decorators/admin.decorator';
 import { Authorize } from '../../shared/decorators/authorize.decorator';
 import { User, UserCreate, UserFilter, UserUpdate } from './user.gql.model';
 
@@ -45,7 +44,6 @@ export class UserResolver {
     return this.userService.create(input);
   }
 
-  @Admin()
   @Mutation(() => User)
   updateUser(
     @Args('id', { type: () => ID })
@@ -56,7 +54,6 @@ export class UserResolver {
     return this.userService.update(id, input);
   }
 
-  @Admin()
   @Mutation(() => User)
   deleteUser(
     @Args('id', { type: () => ID })

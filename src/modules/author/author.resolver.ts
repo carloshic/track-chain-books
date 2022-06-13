@@ -42,7 +42,7 @@ export class AuthorResolver {
     return this.authorService.find(filter);
   }
 
-  @Query(() => Author)
+  @Query(() => Author, { nullable: true })
   author(
     @Args('filter', {
       type: () => AuthorFilter,
@@ -50,7 +50,9 @@ export class AuthorResolver {
     })
     filter: AuthorFilter,
   ) {
-    return this.authorService.findOne(filter);
+    return filter._id
+      ? this.authorService.findOneById(filter._id)
+      : this.authorService.findOne(filter);
   }
 
   @Mutation(() => Author)

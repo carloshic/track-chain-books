@@ -7,7 +7,7 @@ import {
   Resolver,
   Root,
 } from '@nestjs/graphql';
-import { Admin, Authorize } from '../../shared';
+import { Authorize } from '../../shared';
 import { AuthorService } from '../author';
 import { Author } from '../author/author.gql.model';
 import { UserService } from '../user';
@@ -25,7 +25,6 @@ export class BookResolver {
     private userService: UserService,
   ) {}
 
-  @Admin()
   @Query(() => [Book])
   books(
     @Args({
@@ -38,7 +37,7 @@ export class BookResolver {
     return this.bookService.find(filter);
   }
 
-  @Query(() => Book)
+  @Query(() => Book, { nullable: true })
   book(
     @Args({
       type: () => BookFilter,
@@ -47,7 +46,9 @@ export class BookResolver {
     })
     filter: BookFilter,
   ) {
-    return this.bookService.findOne(filter);
+    return filter._id
+      ? this.bookService.findOneById(filter._id)
+      : this.bookService.findOne(filter);
   }
 
   @Mutation(() => Book)

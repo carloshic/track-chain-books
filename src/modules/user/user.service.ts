@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotAcceptableException,
+  NotFoundException,
   Scope,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -70,6 +71,7 @@ export class UserService {
         `Debes especificar un usuario diferente a ${input.username}`,
       );
     }
+
     const exist = await this.User.findOne({ username: input.username });
 
     if (exist) {
@@ -92,6 +94,12 @@ export class UserService {
       },
     );
 
+    if (!data) {
+      throw new NotFoundException(
+        `No se encontró el usuario con el id especificado`,
+      );
+    }
+
     return this.publish({
       data,
       mutationType: MutationType.UPDATED,
@@ -100,6 +108,12 @@ export class UserService {
 
   async delete(id: string) {
     const data = await this.User.findByIdAndDelete(id);
+
+    if (!data) {
+      throw new NotFoundException(
+        `No se encontró el usuario con el id especificado`,
+      );
+    }
 
     return this.publish({
       data,

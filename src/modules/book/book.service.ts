@@ -43,14 +43,6 @@ export class BookService {
   }
 
   async update(id: string, input: IBookUpdate) {
-    const exists = await this.Book.findById(id);
-
-    if (!exists) {
-      throw new NotFoundException(
-        'No se encontró el libro con el id especificado',
-      );
-    }
-
     const data = await this.Book.findByIdAndUpdate(
       id,
       {
@@ -64,6 +56,12 @@ export class BookService {
         new: true,
       },
     );
+
+    if (!data) {
+      throw new NotFoundException(
+        'No se encontró el libro con el id especificado',
+      );
+    }
 
     return this.publish({
       data,
@@ -88,7 +86,7 @@ export class BookService {
 
   // REVIEWS
   async createReview(id: string, input: IBookReviewCreate) {
-    const exists = await this.Book.findByIdAndDelete(id);
+    const exists = await this.Book.findById(id);
 
     if (!exists) {
       throw new NotFoundException(

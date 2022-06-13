@@ -46,14 +46,6 @@ export class AuthorService {
   }
 
   async update(id: string, author: IAuthorUpdate) {
-    const exists = await this.Author.findById(id);
-
-    if (!exists) {
-      throw new NotFoundException(
-        'No se encontró el author con el id especificado',
-      );
-    }
-
     const data = await this.Author.findByIdAndUpdate(
       id,
       {
@@ -67,6 +59,12 @@ export class AuthorService {
         new: true,
       },
     );
+
+    if (!data) {
+      throw new NotFoundException(
+        'No se encontró el author con el id especificado',
+      );
+    }
 
     return this.publish({
       data,
